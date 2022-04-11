@@ -1,7 +1,5 @@
 package com.bridgelabz;
 
-import javax.swing.*;
-
 public class PersonsInfo {
 
     String firstName;
@@ -26,6 +24,7 @@ public class PersonsInfo {
     }
 
 
+
     @Override
     public String toString() {
         return "PersonsInfo:: " +
@@ -39,8 +38,9 @@ public class PersonsInfo {
                 " " + email+ "\n";
     }
 
-    public void print(){
+    public String print(){
         System.out.println("First Name: "+firstName+"\nLast Name: "+lastName+
                 "\nAddress: "+address+"\nCity:"+city+"\nState: "+state+"\nZip: "+zip+"\nContact number:"+number+"\nEmail ID:"+email+"\n");
+        return null;
     }
 }
