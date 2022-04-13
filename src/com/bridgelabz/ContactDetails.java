@@ -1,83 +1,116 @@
 package com.bridgelabz;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ContactDetails {
 
     public static int booksCount;
-    public static ArrayList<PersonsInfo> persons; ;
+    public static ArrayList<PersonsInfo> persons;
     HashMap<Integer,String> map = new HashMap<>();
+//    Dictionary<String,PersonsInfo> dictionary = new Hashtable<>();
     static Scanner scanner = new Scanner(System.in);
+    static File file = new File("AddressBook.txt");
     int i = 1;
-    int n = i;
+    int currentBook;
     public static ContactDetails contact = new ContactDetails();
-
+    String bookName;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void newBooks(){
 
         System.out.println("Enter how many AddressBooks you wants to create:");
         booksCount = scanner.nextInt();
         for (; i <= booksCount; i++){
+//            System.out.println("Enter Book Name:");
+//            bookName = scanner.next();
+            persons =  new ArrayList<>();
             System.out.println("Selected book is Book "+i);
-            persons = new ArrayList<>();
             map.put(i,contact.book());
         }
         System.out.println("Lists of Books: "+booksCount);
-        System.out.println("Enter your choice to select your book:");
-        System.out.println("Size:"+persons.size());
+        System.out.println("books availables :"+map);
+        for(Map.Entry m:map.entrySet()){
+            System.out.println(m.getKey()+" "+m.getValue());
+        }
+        System.out.println("Enter your choice to select your book(0 for 1st book and so on): ");
         int ch = scanner.nextInt();
-        if (ch==1){
+        if (ch==0){
             System.out.println("Selected book is: "+(i-booksCount));
-            System.out.println(persons.get(0));
+            //System.out.println(map.get(persons.contains(0)));
+            System.out.println("Select option to perform options: ");
+            map.get(persons.contains(0));
+            book();
         }
-        else {
-            System.out.println("Selected book is: "+booksCount);
-            System.out.println(persons.get(1));
+        else if (ch == 1){
+            System.out.println("Selected BOook is: "+booksCount);
+            System.out.println(map.get(persons.contains(1)));
+            map.get(persons.contains(1));
+            book();
         }
+        else System.out.println("Wrong input");
         searchbyOptions();
     }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void searchbyOptions() {
         System.out.println("select choice for search data by given options\n1 By Name\n2 by city\n3 By State");
         int ch = scanner.nextInt();
         switch (ch){
             case 1:
                 System.out.println("Enter name");
-                String name = scanner.nextLine();
-                searchByName(name);
+                String name = scanner.next();
+                searchByName(map.get(name));
+                searchbyOptions();
                 break;
             case 2:
                 System.out.println("Enter city");
-                String cityname = scanner.nextLine();
+                String cityname = scanner.next();
                 searchByCity(cityname);
                 break;
             case 3:
                 System.out.println("Enter State");
-                String stateName = scanner.nextLine();
+                String stateName = scanner.next();
                 searchByState(stateName);
         }
     }
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //*-*-*-*-*-*-*-*-*-*-*-Search-*-*-*-*-*-*-*-*-*-*-*
     public List<PersonsInfo> searchByName(String name){
-        return persons.stream().filter(searchPerson -> searchPerson.firstName.equalsIgnoreCase(name)).
-                collect(Collectors.toList());
+        for (PersonsInfo element : persons){
+            if (persons.contains(name)){
+                System.out.println("found:::"+persons.contains(element));
+            }
+        }System.out.printf("No record found:");
+        return null;
     }
     public List<PersonsInfo> searchByCity(String cityName){
-        return persons.stream().filter(searchCity -> searchCity.city.equalsIgnoreCase(cityName)).
-                collect(Collectors.toList());
+
+        boolean result = persons.contains(cityName);
+        if (result){
+            System.out.printf("Found");
+        }
+        else System.out.printf("Not Found");
+
+//        for (PersonsInfo element : persons){
+//            if (persons.contains(cityName)){
+//                System.out.println("found:::"+persons.contains(element));
+//            }
+//        }System.out.printf("No record found:");
+//        return null;
+        return null;
     }
     public List<PersonsInfo> searchByState(String searchState){
-        return persons.stream().filter(stateName -> stateName.state.equalsIgnoreCase(searchState)).
-                collect(Collectors.toList());
+        for (PersonsInfo element : persons){
+            if (persons.contains(searchState)){
+                System.out.println("found:::"+persons.contains(element));
+            }
+        }System.out.printf("No record found:");
+        return null;
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //*-*-*-*-*-*-*-*-*-*-*-*- Menu -*-*-*-*-*-*-*-*-*-*-*-*-*-*
     public String book(){
+        currentBook = i;
         int ch;
         while (true) {
             System.out.println(" Enter 1 to add\n Enter 2 to Update\n Enter 3 to Delete\n Enter 4 for Show Contacts\n Enter 5 for main menu");
@@ -105,10 +138,8 @@ public class ContactDetails {
         }
         return null;
     }
-
 //*-*-*-*-*-*-*-*-*-*-*-*- Taking Inputs -*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String addPerson(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter First Name");
@@ -128,24 +159,52 @@ public class ContactDetails {
         System.out.println("Enter Email: ");
         String email = scanner.nextLine();
         PersonsInfo p = new PersonsInfo(name,lName,address,city,state,zip,number,email);
+        addToFile(p);
         persons.add(p);
         System.out.println("press 1 if you want to add multiple person to Address Book");
         int n = scanner.nextInt();
         if (n==1){
-            map.put(i,contact.addPerson());
+            map.put(n,contact.addPerson());
         }
         else
-            map.put(i,contact.book());
+            map.put(n,contact.book());
         return null;
     }
 
-//*-*-*-*-*-*-*-*-*-*-*-*- Show -*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
+    private void addToFile(PersonsInfo p) {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            writer.write(p.getFirstName()+"\r\n" + p.getLastName() + "\r\n" + p.getAddress() + "\r\n" + p.getCitye() +
+                    "\r\n" + p.getState() + "\r\n" + p.getZip() + "\r\n" + p.getNumber() + "\r\n" + p.getEmail() + "\r\n\r\n");
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public  boolean readPeopleFromFile() throws IOException {
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String name = null;
+            while((name = reader.readLine()) != null) {
+                PersonsInfo person = new PersonsInfo(name, reader.readLine(), reader.readLine(), reader.readLine(), reader.readLine(),reader.read(),reader.read(),reader.readLine());
+                persons.add(person);        //adds person to the list
+                reader.readLine();
+            }
+            return true;
+        }
+        catch ( IOException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//*-*-*-*-*-*-*-*-*-*-*-*- Show -*-*-*-*-*-*-*-*-*-*-*-*-*-*
     public void show(){
         System.out.println(persons.size());
         if (persons.size()==0){
             System.out.println("No Records Found...Empty Address Book");
-            map.put(i,contact.book());
+            map.put(currentBook,contact.book());
         }
         else {
             for (int j = 0; j < persons.size(); j++) {
@@ -153,43 +212,39 @@ public class ContactDetails {
                 System.out.println(persons.get(j));
                 System.out.println("");
             }
-            map.put(i,contact.book());
+            map.put(currentBook,contact.book());
         }
     }
-
 //*-*-*-*-*-*-*-*-*-*-*-*- Delete -*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void delete(){
         if (persons.size()==0){
             System.out.println("No Record Found...Empty Address Book");
-            map.put(i,contact.book());
+            map.put(currentBook,contact.book());
         }
         else {
             System.out.println("Enter First Name to delete contact:");
             String name = scanner.nextLine();
             for (int j = 0; j < persons.size(); j++) {
-                PersonsInfo p = persons.get(i);
+                PersonsInfo p = persons.get(currentBook);
                 if (name.equals(p.firstName)) {
                     persons.remove(j);
                     System.out.println("Delete Successfully..");
                 }
             }
-            map.put(i,contact.book());
+            map.put(currentBook,contact.book());
         }
     }
-
 //*-*-*-*-*-*-*-*-*-*-*-*- Update -*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void update(){
         System.out.println("Enter First and last name to update details");
         String name1 = scanner.nextLine();
         String name2 = scanner.nextLine();
         for(int j = 0; j < persons.size(); j++) {
-            PersonsInfo p = persons.get(i);
+            PersonsInfo p = persons.get(currentBook);
             if (name1.equals(p.firstName) && name2.equals(p.lastName)) {
-                map.put(i,p.print());
+                map.put(currentBook,p.print());
                 System.out.println("Enter Choice to Update\nEnter 1 for Update Address\n Enter 2 for Contact \n " +
                         "Enter 3 for Email address");
                 int choice = scanner.nextInt();
@@ -213,11 +268,11 @@ public class ContactDetails {
                         String email = scanner.nextLine();
                         break;
                 }
-                map.put(i,contact.book());
+                map.put(currentBook,contact.book());
             }
             else {
                 System.out.println("No record found");
-                map.put(i,contact.book());
+                map.put(currentBook,contact.book());
             }
         }
     }
