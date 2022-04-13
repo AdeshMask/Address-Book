@@ -2,8 +2,8 @@ package com.bridgelabz;
 
 public class PersonsInfo {
 
-    String firstName;
-    String lastName;
+    public String firstName;
+    public String lastName;
     String address;
     String city;
     String state;
@@ -37,6 +37,32 @@ public class PersonsInfo {
                 " " + number  +
                 " " + email+ "\n";
     }
+
+    String getFirstName(){
+        return firstName;
+    }
+    String getLastName(){
+        return lastName;
+    }
+    String getAddress(){
+        return address;
+    }
+    String getCitye(){
+        return city;
+    }
+    String getState(){
+        return state;
+    }
+    int getZip(){
+        return zip;
+    }
+    long getNumber(){
+        return number;
+    }
+    String getEmail(){
+        return email;
+    }
+
 
     public String print(){
         System.out.println("First Name: "+firstName+"\nLast Name: "+lastName+

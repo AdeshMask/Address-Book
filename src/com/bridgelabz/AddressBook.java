@@ -1,5 +1,6 @@
 package com.bridgelabz;
 
+import java.io.IOException;
 import java.util.*;
 
 public class AddressBook {
@@ -9,10 +10,11 @@ public class AddressBook {
     public static ArrayList<PersonsInfo> persons = new ArrayList<PersonsInfo>();
     HashMap<Integer,String> map = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         HashMap<Integer,String> map = new HashMap<>();
         System.out.println("*_*_*_*_*_*_*_*_*_*_Welcome to Address Book_*_*_*_*_*_*_*_*_*_*");
         ContactDetails contactDetails = new ContactDetails();
+        contactDetails.readPeopleFromFile();
         contactDetails.newBooks();
     }
 }
